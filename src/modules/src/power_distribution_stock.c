@@ -33,15 +33,15 @@
 
 static bool motorSetEnable = false;
 
-static float r1 = 0;
-static float r2 = 0;
-static float r3 = 0;
-static float r4 = 0;
-static float p1 = 0;
-static float p2 = 0;
-static float p3 = 0;
-static float  p4 = 0;
-static float tr = 0;
+static float r1 = -1;
+static float r2 = -1;
+static float r3 = 1;
+static float r4 = 1;
+static float p1 = 1;
+static float p2 = -1;
+static float p3 = -1;
+static float p4 = 1;
+static float cz = 1;
 
 
 
@@ -75,16 +75,21 @@ bool powerDistributionTest(void) {
 
 void powerDistribution(const control_t *control) {
 #ifdef QUAD_FORMATION_X
-	int16_t r = 10000; //control->roll / 2.0f;
-	int16_t p = 10000; //control->pitch / 2.0f;
+	int16_t r = control->roll / 2.0f;
+	int16_t p = control->pitch / 2.0f;
 
-	motorPower.m1 = limitThrust(tr + r1*r + p1*p + control->yaw);
-	motorPower.m2 = limitThrust(tr + r2*r + p2*p + control->yaw);
-	motorPower.m3 = limitThrust(tr + r3*r + p3*p + control->yaw);
-	motorPower.m4 = limitThrust(tr + r4*r + p4*p + control->yaw);
+	       motorPower.m1 =  limitThrust(control->thrust + r1*r + p1*p + cz*control->yaw); //M13
+	       motorPower.m2 =  limitThrust(control->thrust + r2*r + p2*p - cz*control->yaw); //M14
+	       motorPower.m3 =  limitThrust(control->thrust + r3*r + p3*p + cz*control->yaw); //M15
+	       motorPower.m4 =  limitThrust(control->thrust + r4*r + p4*p - cz*control->yaw); //M16
+
+//	motorPower.m1 = limitThrust(tr + r1*r + p1*p + control->yaw);
+//	motorPower.m2 = limitThrust(tr + r2*r + p2*p + control->yaw);  Test for Change Dynamics
+//	motorPower.m3 = limitThrust(tr + r3*r + p3*p + control->yaw);
+//	motorPower.m4 = limitThrust(tr + r4*r + p4*p + control->yaw);
 	//Robot1 in the most left
 
-//	motorPower.m1 = limitThrust(control->thrust - 6.5f*0.24f*(r/2) + (p/2.0f) + (control->yaw/2.0f));
+//	motorPower.m1 = limitThrust(c - 6.5f*0.24f*(r/2) + (p/2.0f) + (control->yaw/2.0f));
 //	motorPower.m2 = limitThrust(control->thrust - 6.5f*0.24f*(r/2) - (p/2.0f) - (control->yaw/2.0f));
 //	motorPower.m3 = limitThrust(control->thrust - 6.5f*0.76f*(r/2) - (p/2.0f) + (control->yaw/2.0f));
 //    motorPower.m4 = limitThrust(control->thrust - 6.5f*0.76f*(r/2) + (p/2.0f) - (control->yaw/2.0f));
@@ -174,10 +179,10 @@ void powerDistribution(const control_t *control) {
         ////
         ////Robot4
         //
-//                motorPower.m1 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p + control->yaw); //M13
-//                motorPower.m2 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p - control->yaw); //M14
-//                motorPower.m3 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p + control->yaw); //M15
-//                motorPower.m4 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p - control->yaw); //M16
+//                motorPower.m1 =  limitThrust(control->thrust - 0.75f*(r) - 0.75f*p + control->yaw); //M13
+//                motorPower.m2 =  limitThrust(control->thrust - 0.75f*(r) - 0.75f*p - control->yaw); //M14
+//                motorPower.m3 =  limitThrust(control->thrust + 0.75f*(r) + 0.75f*p + control->yaw); //M15
+//                motorPower.m4 =  limitThrust(control->thrust + 0.75f*(r) + 0.75f*p - control->yaw); //M16
 
 
 #else // QUAD_FORMATION_NORMAL
@@ -221,7 +226,7 @@ PARAM_ADD(PARAM_FLOAT, pitch1, &p1)
 PARAM_ADD(PARAM_FLOAT, pitch2, &p2)
 PARAM_ADD(PARAM_FLOAT, pitch3, &p3)
 PARAM_ADD(PARAM_FLOAT, pitch4, &p4)
-PARAM_ADD(PARAM_FLOAT, thrust, &tr)
+PARAM_ADD(PARAM_FLOAT, czz, &cz)
 PARAM_GROUP_STOP(var)
 
 PARAM_GROUP_START(motorPowerSet)
