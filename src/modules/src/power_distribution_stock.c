@@ -48,192 +48,79 @@ static float p4 = 1;
 static float cz = 1;
 
 
-
 static struct {
-	uint32_t m1;
-	uint32_t m2;
-	uint32_t m3;
-	uint32_t m4;
+    uint32_t m1;
+    uint32_t m2;
+    uint32_t m3;
+    uint32_t m4;
 } motorPower;
 
 static struct {
-	uint16_t m1;
-	uint16_t m2;
-	uint16_t m3;
-	uint16_t m4;
+    uint16_t m1;
+    uint16_t m2;
+    uint16_t m3;
+    uint16_t m4;
 } motorPowerSet;
 
 void powerDistributionInit(void) {
-	motorsInit(motorMapDefaultBrushed);
+    motorsInit(motorMapDefaultBrushed);
 }
 
 bool powerDistributionTest(void) {
-	bool pass = true;
+    bool pass = true;
 
-	pass &= motorsTest();
+    pass &= motorsTest();
 
-	return pass;
+    return pass;
 }
 
 #define limitThrust(VAL) limitUint16(VAL)
 
 void powerDistribution(const control_t *control) {
 #ifdef QUAD_FORMATION_X
-	int16_t r = control->roll / 2.0f;
-	int16_t p = control->pitch / 2.0f;
+    int16_t r = control->roll / 2.0f;
+    int16_t p = control->pitch / 2.0f;
 
-	       motorPower.m1 =  limitThrust(control->thrust + r1*r + p1*p + cz*control->yaw); //M13
-	       motorPower.m2 =  limitThrust(control->thrust + r2*r + p2*p - cz*control->yaw); //M14
-	       motorPower.m3 =  limitThrust(control->thrust + r3*r + p3*p + cz*control->yaw); //M15
-	       motorPower.m4 =  limitThrust(control->thrust + r4*r + p4*p - cz*control->yaw); //M16
-
-//	motorPower.m1 = limitThrust(tr + r1*r + p1*p + control->yaw);
-//	motorPower.m2 = limitThrust(tr + r2*r + p2*p + control->yaw);  Test for Change Dynamics
-//	motorPower.m3 = limitThrust(tr + r3*r + p3*p + control->yaw);
-//	motorPower.m4 = limitThrust(tr + r4*r + p4*p + control->yaw);
-	//Robot1 in the most left
-
-//	motorPower.m1 = limitThrust(c - 6.5f*0.24f*(r/2) + (p/2.0f) + (control->yaw/2.0f));
-//	motorPower.m2 = limitThrust(control->thrust - 6.5f*0.24f*(r/2) - (p/2.0f) - (control->yaw/2.0f));
-//	motorPower.m3 = limitThrust(control->thrust - 6.5f*0.76f*(r/2) - (p/2.0f) + (control->yaw/2.0f));
-//    motorPower.m4 = limitThrust(control->thrust - 6.5f*0.76f*(r/2) + (p/2.0f) - (control->yaw/2.0f));
-
-//	motorPower.m1 = limitThrust(control->thrust - 6.5f*0.36f*(r/2) + (p/2.0f) + (control->yaw/2.0f));
-//	motorPower.m2 = limitThrust(control->thrust - 6.5f*0.36f*(r/2) - (p/2.0f) - (control->yaw/2.0f));
-//	motorPower.m3 = limitThrust(control->thrust - 6.5f*1.18f*(r/2) - (p/2.0f) + (control->yaw/2.0f));
-//    motorPower.m4 = limitThrust(control->thrust - 6.5f*1.18f*(r/2) + (p/2.0f) - (control->yaw/2.0f));
-
-	//Robot 2 in the most right
-
-	// motorPower.m1 = limitThrust(control->thrust  + 6.5f*0.76f*(r/2) + (p/2.0f) + (control->yaw/2.0f));  //motor6
-	 //motorPower.m2 = limitThrust(control->thrust  + 6.5f*0.76f*(r/2) - (p/2.0f) - (control->yaw/2.0f));  //motor7
-	 //motorPower.m3 =  limitThrust(control->thrust + 6.5f*0.24f*(r/2) - (p/2.0f) + (control->yaw/2.0f)); //motor8
-	 //motorPower.m4 =  limitThrust(control->thrust + 6.5f*0.24f*(r/2) + (p/2.0f) - (control->yaw/2.0f)); //motor9
-
-
-//	 motorPower.m1 = limitThrust(control->thrust  + 6.5f*1.18f*(r/2) + (p/2.0f) + (control->yaw/2.0f));  //motor6
-//	 motorPower.m2 = limitThrust(control->thrust  + 6.5f*1.18f*(r/2) - (p/2.0f) - (control->yaw/2.0f));  //motor7
-//	 motorPower.m3 =  limitThrust(control->thrust + 6.5f*0.36f*(r/2) - (p/2.0f) + (control->yaw/2.0f)); //motor8
-//	 motorPower.m4 =  limitThrust(control->thrust + 6.5f*0.36f*(r/2) + (p/2.0f) - (control->yaw/2.0f)); //motor9
-
-
-//float dc = 33.; //mm
-//float d1 = 210; //mm
-//float d4 = 143; //mm
-//float d5 = 95; //mm
-//float d8 = 28; //mm
-
-
-
-
-//////Robot1
-//
-//       motorPower.m1 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d1) + p/4.0f + control->yaw/4.0f); //M1
-//       motorPower.m2 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d1) - p/4.0f - control->yaw/4.0f); //M2
-//       motorPower.m3 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d4) - p/4.0f - control->yaw/4.0f); //M3
-//       motorPower.m4 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d4) + p/4.0f + control->yaw/4.0f); //M4
-
-//
-////Robot2
-
-//       motorPower.m1 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d5) + p/4.0f + control->yaw/4.0f); //M5
-//       motorPower.m2 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d5) - p/4.0f - control->yaw/4.0f); //M6
-//       motorPower.m3 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d8) - p/4.0f - control->yaw/4.0f); //M7
-//       motorPower.m4 =  limitThrust(control->thrust - 24*(r/4.0f)*(dc/d8) + p/4.0f + control->yaw/4.0f); //M8
-////
-//
-//////Robot3
-//
-//        motorPower.m1 =  limitThrust(control->thrust + 24*(r/4.0f)*(dc/d8) + p/4.0f - control->yaw/4.0f); //M9
-//        motorPower.m2 =  limitThrust(control->thrust + 24*(r/4.0f)*(dc/d8) - p/4.0f + control->yaw/4.0f); //M10
-//        motorPower.m3 =  limitThrust(control->thrust + 24*(r/4.0f)*(dc/d5) - p/4.0f + control->yaw/4.0f); //M11
-//        motorPower.m4 =  limitThrust(control->thrust + 24*(r/4.0f)*(dc/d5) + p/4.0f - control->yaw/4.0f); //M12
-////
-////
-////Robot4
-//
-//        motorPower.m1 =  limitThrust(control->thrust + 50*(r/4.0f)*(dc/d4) + p/4.0f - control->yaw/4.0f); //M13
-//        motorPower.m2 =  limitThrust(control->thrust + 50*(r/4.0f)*(dc/d4) - p/4.0f + control->yaw/4.0f); //M14
-//        motorPower.m3 =  limitThrust(control->thrust + 50*(r/4.0f)*(dc/d1) - p/4.0f + control->yaw/4.0f); //M15
-//        motorPower.m4 =  limitThrust(control->thrust + 50*(r/4.0f)*(dc/d1) + p/4.0f - control->yaw/4.0f); //M16
-
-        ////Robot1 Official
-
-//               motorPower.m1 =  limitThrust(control->thrust + 3.0f*(r) + 3.0f*p + control->yaw); //M1
-//               motorPower.m2 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p - control->yaw); //M2
-//               motorPower.m3 =  limitThrust(control->thrust + 3.0f*(r) - 3.0f*p + control->yaw); //M3
-//               motorPower.m4 =  limitThrust(control->thrust + 3.0f*(r) + 3.0f*p - control->yaw); //M4
-
-        //
-        ////Robot2
-
-//               motorPower.m1 =  limitThrust(control->thrust - 5.0f*(r) + p/4.0f + control->yaw/4.0f); //M5
-//               motorPower.m2 =  limitThrust(control->thrust - 5.0f*(r) - p/4.0f - control->yaw/4.0f); //M6
-//               motorPower.m3 =  limitThrust(control->thrust - 5.0f*(r) - p/4.0f - control->yaw/4.0f); //M7
-//               motorPower.m4 =  limitThrust(control->thrust - 5.0f*(r) + p/4.0f + control->yaw/4.0f); //M8
-        //
-        //
-        //////Robot3
-        //
-//                motorPower.m1 =  limitThrust(control->thrust + 5.0f*(r) + p/4.0f - control->yaw/4.0f); //M9
-//                motorPower.m2 =  limitThrust(control->thrust + 5.0f*(r) - p/4.0f + control->yaw/4.0f); //M10
-//                motorPower.m3 =  limitThrust(control->thrust + 5.0f*(r) - p/4.0f + control->yaw/4.0f); //M11
-//                motorPower.m4 =  limitThrust(control->thrust + 5.0f*(r) + p/4.0f - control->yaw/4.0f); //M12
-        ////
-        ////
-        ////Robot4
-        //
-//                motorPower.m1 =  limitThrust(control->thrust - 0.75f*(r) - 0.75f*p + control->yaw); //M13
-//                motorPower.m2 =  limitThrust(control->thrust - 0.75f*(r) - 0.75f*p - control->yaw); //M14
-//                motorPower.m3 =  limitThrust(control->thrust + 0.75f*(r) + 0.75f*p + control->yaw); //M15
-//                motorPower.m4 =  limitThrust(control->thrust + 0.75f*(r) + 0.75f*p - control->yaw); //M16
-
+    motorPower.m1 =  limitThrust(control->thrust + r1*r + p1*p + cz*control->yaw); //M13
+    motorPower.m2 =  limitThrust(control->thrust + r2*r + p2*p - cz*control->yaw); //M14
+    motorPower.m3 =  limitThrust(control->thrust + r3*r + p3*p + cz*control->yaw); //M15
+    motorPower.m4 =  limitThrust(control->thrust + r4*r + p4*p - cz*control->yaw); //M16
 
 #else // QUAD_FORMATION_NORMAL
-	motorPower.m1 = limitThrust(
-			control->thrust + control->pitch + control->yaw);
-	motorPower.m2 = limitThrust(control->thrust - control->roll - control->yaw);
-	motorPower.m3 = limitThrust(
-			control->thrust - control->pitch + control->yaw);
-	motorPower.m4 = limitThrust(control->thrust + control->roll - control->yaw);
+    motorPower.m1 = limitThrust(control->thrust + control->pitch + control->yaw);
+    motorPower.m2 = limitThrust(control->thrust - control->roll - control->yaw);
+    motorPower.m3 = limitThrust(control->thrust - control->pitch + control->yaw);
+    motorPower.m4 = limitThrust(control->thrust + control->roll - control->yaw);
 
-	motorPower.m1 = limitThrust(
-			control->thrust + control->pitch / 2 + control->yaw / 2);
-	motorPower.m2 = limitThrust(
-			control->thrust - control->roll / 2 - control->yaw / 2);
-	motorPower.m3 = limitThrust(
-			control->thrust - control->pitch / 2 + control->yaw / 2);
-	motorPower.m4 = limitThrust(
-			control->thrust + control->roll / 2 - control->yaw / 2);
+    motorPower.m1 = limitThrust(control->thrust + control->pitch / 2 + control->yaw / 2);
+    motorPower.m2 = limitThrust(control->thrust - control->roll / 2 - control->yaw / 2);
+    motorPower.m3 = limitThrust(control->thrust - control->pitch / 2 + control->yaw / 2);
+    motorPower.m4 = limitThrust(control->thrust + control->roll / 2 - control->yaw / 2);
 #endif
 
-
-   	if(motorSetEnable_t == true && countdowner > 0)
-    {
-      motorSetEnable = true;
-      countdowner = countdowner - 1;
-    }
-     else if(motorSetEnable_t == true && countdowner == 0)
-    {
-       motorSetEnable = false;
-       motorSetEnable_t = false;
-       countdowner = countmaster;
+    // Temporal motor set
+    if (motorSetEnable_t == true && countdowner > 0) {
+        motorSetEnable = true;
+        countdowner--;
+    } else if (motorSetEnable_t == true && countdowner == 0) {
+        motorSetEnable = false;
+        motorSetEnable_t = false;
+        countdowner = countmaster;
     }
 
 
-	if (motorSetEnable) {
-		motorsSetRatio(MOTOR_M1, motorPowerSet.m2);
-		motorsSetRatio(MOTOR_M2, motorPowerSet.m1);
-		motorsSetRatio(MOTOR_M3, motorPowerSet.m1);
-		motorsSetRatio(MOTOR_M4, motorPowerSet.m2);
-	} else {
-		motorsSetRatio(MOTOR_M1, motorPower.m1);
-		motorsSetRatio(MOTOR_M2, motorPower.m2);
-		motorsSetRatio(MOTOR_M3, motorPower.m3);
-		motorsSetRatio(MOTOR_M4, motorPower.m4);
-	}
+    if (motorSetEnable) {
+        motorsSetRatio(MOTOR_M1, motorPowerSet.m2);
+        motorsSetRatio(MOTOR_M2, motorPowerSet.m1);
+        motorsSetRatio(MOTOR_M3, motorPowerSet.m1);
+        motorsSetRatio(MOTOR_M4, motorPowerSet.m2);
+    } else {
+        motorsSetRatio(MOTOR_M1, motorPower.m1);
+        motorsSetRatio(MOTOR_M2, motorPower.m2);
+        motorsSetRatio(MOTOR_M3, motorPower.m3);
+        motorsSetRatio(MOTOR_M4, motorPower.m4);
+    }
 }
-
 
 
 PARAM_GROUP_START(var)
@@ -250,7 +137,7 @@ PARAM_GROUP_STOP(var)
 
 PARAM_GROUP_START(motorPowerSet)
 PARAM_ADD(PARAM_UINT8, enable, &motorSetEnable)
-PARAM_ADD(PARAM_UINT8, enable_t, &motorSetEnable_t)
+PARAM_ADD(PARAM_UINT8, enable_t, &motorSetEnable_t)  // Enable based on timer
 PARAM_ADD(PARAM_UINT16, countmaster, &countmaster)
 PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
@@ -259,8 +146,8 @@ PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m4)
 PARAM_GROUP_STOP(ring)
 
 LOG_GROUP_START(motor)
-LOG_ADD(LOG_INT32, m4, &motorPower.m4)
 LOG_ADD(LOG_INT32, m1, &motorPower.m1)
 LOG_ADD(LOG_INT32, m2, &motorPower.m2)
 LOG_ADD(LOG_INT32, m3, &motorPower.m3)
+LOG_ADD(LOG_INT32, m4, &motorPower.m4)
 LOG_GROUP_STOP(motor)
