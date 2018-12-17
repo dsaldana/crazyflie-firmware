@@ -102,10 +102,10 @@ void powerDistribution(const control_t *control) {
     }
 
     if (motorSetEnable || motor_set_timer) {
-        motorsSetRatio(MOTOR_M1, motorPowerSet.m2);
-        motorsSetRatio(MOTOR_M2, motorPowerSet.m1);
-        motorsSetRatio(MOTOR_M3, motorPowerSet.m1);
-        motorsSetRatio(MOTOR_M4, motorPowerSet.m2);
+        motorsSetRatio(MOTOR_M1, motorPowerSet.m1);
+        motorsSetRatio(MOTOR_M2, motorPowerSet.m2);
+        motorsSetRatio(MOTOR_M3, motorPowerSet.m3);
+        motorsSetRatio(MOTOR_M4, motorPowerSet.m4);
     } else {
         motorsSetRatio(MOTOR_M1, motorPower.m1);
         motorsSetRatio(MOTOR_M2, motorPower.m2);
