@@ -31,11 +31,9 @@
 
 #include "motors.h"
 
-static bool motorSetEnable = false;
-static bool motorSetEnable_t = false;
-static uint16_t countmaster = 5000;
-static uint16_t countdowner = 5000;
 
+static bool motorSetEnable = false;
+static uint16_t motor_set_timer = 0;
 
 static float r1 = -1;
 static float r2 = -1;
@@ -98,18 +96,12 @@ void powerDistribution(const control_t *control) {
     motorPower.m4 = limitThrust(control->thrust + control->roll / 2 - control->yaw / 2);
 #endif
 
-    // Temporal motor set
-    if (motorSetEnable_t == true && countdowner > 0) {
-        motorSetEnable = true;
-        countdowner--;
-    } else if (motorSetEnable_t == true && countdowner == 0) {
-        motorSetEnable = false;
-        motorSetEnable_t = false;
-        countdowner = countmaster;
+    // The timer is reduced on every tick.
+    if (motor_set_timer){
+        motor_set_timer--;
     }
 
-
-    if (motorSetEnable) {
+    if (motorSetEnable || motor_set_timer) {
         motorsSetRatio(MOTOR_M1, motorPowerSet.m2);
         motorsSetRatio(MOTOR_M2, motorPowerSet.m1);
         motorsSetRatio(MOTOR_M3, motorPowerSet.m1);
@@ -137,8 +129,7 @@ PARAM_GROUP_STOP(var)
 
 PARAM_GROUP_START(motorPowerSet)
 PARAM_ADD(PARAM_UINT8, enable, &motorSetEnable)
-PARAM_ADD(PARAM_UINT8, enable_t, &motorSetEnable_t)  // Enable based on timer
-PARAM_ADD(PARAM_UINT16, countmaster, &countmaster)
+PARAM_ADD(PARAM_UINT16, motor_timer, &motor_set_timer)  // Enable based on timer
 PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
 PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m3)
