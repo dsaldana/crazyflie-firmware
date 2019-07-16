@@ -1,6 +1,11 @@
-# Crazyflie 1.0/2.0 Firmware  [![Build Status](https://api.travis-ci.org/bitcraze/crazyflie-firmware.svg)](https://travis-ci.org/bitcraze/crazyflie-firmware)
+# ModQuad Firmware 
 
-This project contains the source code for the Crazyflie 1.0/2.0 firmware. 
+This project is a fork of the original [Crazyflie 1.0/2.0 firmware](https://github.com/bitcraze/crazyflie-firmware). 
+
+This project includes:
+* Attitude control for cooperative flight
+* Timer for high torque generation, used in undocking
+
 
 ## Dependencies
 
