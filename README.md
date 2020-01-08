@@ -2,7 +2,7 @@
 
 This project is a fork of the original [Crazyflie 1.0/2.0 firmware](https://github.com/bitcraze/crazyflie-firmware). 
 
-This project includes:
+This project extends the original firmware to include:
 * Attitude control for cooperative flight
 * Timer for high torque generation, used in undocking
 
